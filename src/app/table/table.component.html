@@ -1,0 +1,14 @@
+<table>
+    <tr>
+        <th>Sample Size</th>
+        <th>Sample Mean</th>
+        <th>Standard Deviation</th>
+        <th *ngIf="hypothesisMean">Hypothesized Mean</th>
+    </tr>
+    <tr>
+        <td>{{sampleSize}}</td>
+        <td>{{sampleMean}}</td>
+        <td>{{standardDeviation}}</td>
+        <td *ngIf="hypothesisMean">{{hypothesisMean}}</td>
+    </tr>
+</table>

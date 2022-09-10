@@ -1,0 +1,9 @@
+<div class="input-box" data-test="input-with-text">
+    <p>{{inputText}}</p>
+    <input
+    [disabled]="!enabled"
+    [ngModel] = "inputVal"
+    (ngModelChange)="updateValue($event)">
+
+</div>
+<p *ngIf="isImproperValue && enabled && inputText" class="error-text">{{errorText}}</p>
