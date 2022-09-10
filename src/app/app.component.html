@@ -319,12 +319,14 @@
 <app-form-input
 [inputText]="'Standard Deviation:'"
 [minimumVal]="0"
+[eqMinimumVal]="false"
 (valueChange)="updateStandardDeviation($event)"
 (invalidInput)="updateDeviationInvalid($event)"></app-form-input>
 
 <div class="checkbox">
-  <input type="checkbox" (change)="enableHypothesis()"> 
-  <p>Enable Hypothesis Mean</p>
+  <input type="checkbox" (change)="enableHypothesis()"
+  [checked]="hypothesisEnabled"> 
+  <p>Perform Hypothesis Test</p>
 </div>
 
 <div class="indent">
@@ -341,7 +343,7 @@
   <button 
   (click)="generateTable()"
   [disabled]="!formValid">
-    Generate Graph
+    Generate Table
   </button>
   <span class="spacer"></span>
   <button (click)="clearAll()">Clear</button>

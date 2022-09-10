@@ -26,6 +26,11 @@ export class FormInputComponent implements OnInit {
   @Input() minimumVal: number | undefined;
 
   /**
+   * Determines if minimum value is compared with >= or >
+   */
+  @Input() eqMinimumVal: boolean = true;
+
+  /**
    * Determines if input must be an integer or rational number
    */
   @Input() wholeNumber: boolean = false;
@@ -43,7 +48,7 @@ export class FormInputComponent implements OnInit {
   /**
    * Current value input is set to
    */
-  public inputVal = '';
+  public inputVal: number | undefined;
   /**
    * Whether input is truly a number, default is true to allow initial empty state
    */
@@ -71,30 +76,34 @@ export class FormInputComponent implements OnInit {
   ngOnInit(): void {
     // Subscribe to clear data event
     this.dataService.clear$.subscribe( () => {
-      this.inputVal = '';
+      this.inputVal = undefined;
+      this.invalidInput.emit(true);
+      this.errorText = '';
     })
-    this.invalidInput.next(true);
+    this.invalidInput.emit(true);
   }
 
   /**
    * Update and emit new input value if valid
    * @param value current input value
    */
+  //Todo: 3.x validates
   updateValue(value: any){
     this.inputVal = value
     
-    this.isImproperValue = value !== '' && (!this.checkIsNumber(value) ||  (this.isBelowMinimum(value) || !this.isWholeNumber(value)));
+    this.isImproperValue = value !== '' && ((this.isBelowMinimum(value) || !this.isWholeNumber(value)));
     if(!this.isImproperValue){
       const out = this.wholeNumber ? parseInt(value) : parseFloat(value);
       this.valueChange.emit(out);
-      this.invalidInput.next(false);
+      this.invalidInput.emit(false);
+      this.errorText = '';
     }
-    else if(value){
-      this.invalidInput.next(true)
+    else if(value !== undefined && value !== null){
+      this.invalidInput.emit(true)
       this.generateErrorText(value)
     }
     if(value === ''){
-      this.invalidInput.next(true)
+      this.invalidInput.emit(true)
     }
   }
 
@@ -102,9 +111,19 @@ export class FormInputComponent implements OnInit {
    * Checks input is above minimum
    * @param value Current input value
    * @returns False if no minimum or above, true if below set minimum
+   * TODO: standard deviation > 0 not >= 0
    */
-  isBelowMinimum(value: string){
-    return this.minimumVal !== undefined ? parseFloat(value) < this.minimumVal : false;
+  isBelowMinimum(value: number){
+    if(this.minimumVal !== undefined){
+    if(this.eqMinimumVal)
+    {
+      return value < this.minimumVal;
+    }
+    else{
+      return value <= this.minimumVal;
+    }
+    }
+    return false;
   }
 
   /**
@@ -124,7 +143,8 @@ export class FormInputComponent implements OnInit {
    * @param value Current input value
    * @returns true if value is a number, false if any other text is parsed.
    */
-  checkIsNumber(value: string){
+  checkIsNumber(value: any){
+    const type = typeof(value);
     this.isNumber = !!parseFloat(value) || parseFloat(value) === 0
     return this.isNumber;
   }
@@ -133,12 +153,10 @@ export class FormInputComponent implements OnInit {
    * Sets error text based on failed validation condition
    * @param input Input value that failed validation
    */
-  generateErrorText(input : string){
-    if(!this.isNumber){
-      this.errorText = 'Please enter a valid number'
-    }
-    else if(this.isBelowMinimum(input)){
-      this.errorText = `The value must be greater than or equal to ${this.minimumVal}`
+  generateErrorText(input : number){
+    if(this.isBelowMinimum(input)){
+      const eqText = this.eqMinimumVal ? 'or equal to ' : '';
+      this.errorText = `The value must be greater than ${eqText}${this.minimumVal}`
     }
     else{
       this.errorText = 'Please enter a whole number'

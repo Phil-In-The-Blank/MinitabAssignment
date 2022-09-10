@@ -145,9 +145,12 @@ export class AppComponent {
 
   /**
    * Clear all data and hide table component
+   * TODO: Disable generate table button
    */
   public clearAll(){
     this.dataService.clearData();
     this.tableGenerated = false;
+    this.hypothesisEnabled = false;
+    this.validateForm();
   }
 }
