@@ -113,6 +113,7 @@ export class AppComponent {
 
   /**
    * Ensure all enabled inputs are valid and set necessary error message
+   * TODO: hypothesis breaks validation once cleared
    */
   public validateForm(){
     const checkMean = this.sampleMean !== undefined;

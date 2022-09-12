@@ -91,18 +91,18 @@ export class FormInputComponent implements OnInit {
   updateValue(value: any){
     this.inputVal = value
     
-    this.isImproperValue = value !== '' && ((this.isBelowMinimum(value) || !this.isWholeNumber(value)));
+    this.isImproperValue = value === null || ((this.isBelowMinimum(value) || !this.isWholeNumber(value)));
     if(!this.isImproperValue){
       const out = this.wholeNumber ? parseInt(value) : parseFloat(value);
       this.valueChange.emit(out);
       this.invalidInput.emit(false);
       this.errorText = '';
     }
-    else if(value !== undefined && value !== null){
+    else if(value !== null){
       this.invalidInput.emit(true)
       this.generateErrorText(value)
     }
-    if(value === ''){
+    else{
       this.invalidInput.emit(true)
     }
   }

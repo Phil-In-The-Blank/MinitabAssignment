@@ -343,10 +343,10 @@
   <button 
   (click)="generateTable()"
   [disabled]="!formValid">
-    Generate Table
+    OK
   </button>
   <span class="spacer"></span>
-  <button (click)="clearAll()">Clear</button>
+  <button (click)="clearAll()">Reset</button>
 </div>
 <app-table *ngIf="tableGenerated"></app-table>
 
